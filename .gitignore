@@ -1,3 +1,4 @@
 .ENV
 
 security/
+node_modules/
