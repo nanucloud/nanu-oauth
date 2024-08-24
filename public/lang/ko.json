@@ -1,0 +1,15 @@
+{
+    "usernameTitle": "계속하려면 아이디를 입력해 주세요",
+    "passwordTitle": "비밀번호를 입력하세요",
+    "pinTitle": "사람임을 인증하세요",
+    "usernameLabel": "사용자 ID",
+    "passwordLabel": "비밀번호",
+    "nextButton": "다음",
+    "backButton": "뒤로",
+    "loginToggleLink": "비밀번호/아이디 찾기",
+    "app_end":" 이/가",
+    "authTitle" : "NANU ID로 로그인하려 합니다",
+    "joinLink":"NANU ID 시작하기",
+    "googleButton" : "구글 계정으로 인증하기"
+  }
+  
