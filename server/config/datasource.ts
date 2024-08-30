@@ -1,19 +1,13 @@
 import { DataSource } from 'typeorm';
-import { User } from '../entity/User';
-
-const isProduction = process.env.NODE_ENV === 'production';
+import { User } from '../entities/user.entity';
+import { Application } from '../entities/application.entity';
+import { Scope } from '../entities/scope.entity';
+import { AuthCode } from '../entities/auth_code.entity';
 
 export const AppDataSource = new DataSource({
-  type: 'sqlite',  
-  database: 'db.sqlite', 
-  entities: [User],
-  synchronize: !isProduction , // 손실 가능성이 있어 개발 환경에서만 사용하게 함
+  type: 'sqlite',
+  database: 'database.sqlite',
+  entities: [User, Application, Scope, AuthCode],
+  synchronize: true,
+  logging: true,
 });
-
-AppDataSource.initialize()
-  .then(() => {
-    console.log('Data Source has been initialized!');
-  })
-  .catch((err) => {
-    console.error('Error during Data Source initialization', err);
-  });
