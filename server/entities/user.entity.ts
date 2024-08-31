@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, OneToMany } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
 import { AuthCode } from './auth_code.entity';
 
 @Entity('user')
@@ -17,6 +17,9 @@ export class User {
 
   @CreateDateColumn({ type: 'timestamp' })
   created_at: Date;
+
+  @UpdateDateColumn({ type: 'timestamp' })
+  updated_at: Date;
 
   @OneToMany(() => AuthCode, (authCode) => authCode.user)
   authCodes: AuthCode[];

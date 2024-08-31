@@ -10,7 +10,7 @@ export class Application {
   @ManyToOne(() => Scope, (scope) => scope.applications)
   scope: Scope;
 
-  @Column({ type: 'varchar', nullable: false })
+  @Column({ type: 'varchar', nullable: false, unique: true })
   app_name: string;
 
   @CreateDateColumn({ type: 'timestamp' })
@@ -21,6 +21,9 @@ export class Application {
 
   @Column({ type: 'varchar', nullable: false })
   client_key: string;
+
+  @Column({ type: 'varchar', nullable: false })
+  client_secret: string;
 
   @OneToMany(() => AuthCode, (authCode) => authCode.application)
   authCodes: AuthCode[];

@@ -7,7 +7,7 @@ export class Scope {
   @PrimaryGeneratedColumn('increment')
   scope_id: number;
 
-  @Column({ type: 'varchar', nullable: false })
+  @Column({ type: 'varchar', nullable: false, unique: true })
   scope_name: string;
 
   @Column({ type: 'varchar', nullable: false })

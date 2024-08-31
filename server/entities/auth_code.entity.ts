@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn } from 'typeorm';
 import { User } from './user.entity';
 import { Application } from './application.entity';
 import { Scope } from './scope.entity';
@@ -17,9 +17,12 @@ export class AuthCode {
   @ManyToOne(() => Scope, (scope) => scope.authCodes)
   scope: Scope;
 
-  @Column({ type: 'bigint', nullable: false })
-  auth_code: number;
+  @Column({ type: 'varchar', nullable: false })
+  auth_code: string;
 
-  @Column({ type: 'time', nullable: false })
-  expires_at: string;
+  @CreateDateColumn({ type: 'timestamp' })
+  created_at: Date;
+
+  @Column({ type: 'timestamp', nullable: false })
+  expires_at: Date;
 }
