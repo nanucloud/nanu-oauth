@@ -13,7 +13,7 @@ export class ApplicationController {
   async createApplication(req: Request, res: Response) {
     const applicationDto: CreateApplicationDto = req.body;
     const scope = await this.scopeRepository.findOne({ where: { scope_name: applicationDto.scope_name } });
-    
+
     if (!scope) {
       return res.status(400).json({ message: 'Invalid scope' });
     }
@@ -40,7 +40,7 @@ export class ApplicationController {
   async getApplication(req: Request, res: Response) {
     const { id } = req.params;
     const application = await this.applicationRepository.findOne({ where: { app_id: id }, relations: ['scope'] });
-    
+
     if (!application) {
       return res.status(404).json({ message: 'Application not found' });
     }
@@ -60,7 +60,7 @@ export class ApplicationController {
     const { id } = req.params;
     const updateDto: UpdateApplicationDto = req.body;
     const application = await this.applicationRepository.findOne({ where: { app_id: id } });
-    
+
     if (!application) {
       return res.status(404).json({ message: 'Application not found' });
     }
@@ -92,7 +92,7 @@ export class ApplicationController {
   async deleteApplication(req: Request, res: Response) {
     const { id } = req.params;
     const result = await this.applicationRepository.delete(id);
-    
+
     if (result.affected === 0) {
       return res.status(404).json({ message: 'Application not found' });
     }

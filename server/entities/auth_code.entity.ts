@@ -1,7 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn } from 'typeorm';
 import { User } from './user.entity';
 import { Application } from './application.entity';
-import { Scope } from './scope.entity';
 
 @Entity('auth_code')
 export class AuthCode {
@@ -14,15 +13,15 @@ export class AuthCode {
   @ManyToOne(() => Application, (application) => application.authCodes)
   application: Application;
 
-  @ManyToOne(() => Scope, (scope) => scope.authCodes)
-  scope: Scope;
-
   @Column({ type: 'varchar', nullable: false })
   auth_code: string;
 
   @CreateDateColumn({ type: 'timestamp' })
   created_at: Date;
 
-  @Column({ type: 'timestamp', nullable: false })
-  expires_at: Date;
+  @Column({ type: 'bool', nullable: false })
+  vaild: boolean;
+
+  @Column({type:'int'})
+  permission_level: number;
 }

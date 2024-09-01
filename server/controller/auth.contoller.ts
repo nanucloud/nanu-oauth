@@ -19,9 +19,6 @@ export class AuthController {
         if (!application) {
             return res.status(400).json({ message: 'Invalid application' });
         }
-
-        // Here you would typically render a login page or redirect to one
-        // For simplicity, we'll just return the necessary information
         return res.json({
             app_name,
             client_key: application.client_key,
@@ -44,7 +41,6 @@ export class AuthController {
         }
 
         const authCode = generateAuthCode();
-        const expiresAt = new Date();
         const expiresAt = new Date();
         expiresAt.setMinutes(expiresAt.getMinutes() + 10); // Set expiry time to 10 minutes from now
 
