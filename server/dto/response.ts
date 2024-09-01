@@ -3,7 +3,7 @@ export interface ApplicationResponseDto {
     app_id: string;
     app_name: string;
     client_key: string;
-    scope: string;
+    access_mode:boolean;
     created_at: Date;
     updated_at: Date;
   }
@@ -16,11 +16,6 @@ export interface ApplicationResponseDto {
     updated_at: Date;
   }
   
-  export interface ScopeResponseDto {
-    scope_id: number;
-    scope_name: string;
-    scope_info: string;
-  }
   
   export interface AuthCodeResponseDto {
     auth_code: string;
