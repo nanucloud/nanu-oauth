@@ -1,5 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
 import { AuthCode } from './auth_code.entity';
+import { Permission } from './permission.entity';
 
 @Entity('user')
 export class User {
@@ -23,4 +24,7 @@ export class User {
 
   @OneToMany(() => AuthCode, (authCode) => authCode.user)
   authCodes: AuthCode[];
+
+  @OneToMany(() => Permission, (permission) => permission.permission_user)
+  permissionApps: Permission[];
 }
