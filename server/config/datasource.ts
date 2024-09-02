@@ -6,7 +6,7 @@ import { AuthCode } from '../entities/auth_code.entity';
 export const AppDataSource = new DataSource({
   type: 'sqlite',
   database: 'database.sqlite',
-  entities: [User, Application, Scope, AuthCode],
+  entities: [User, Application, AuthCode],
   synchronize: true,
   logging: true,
 });

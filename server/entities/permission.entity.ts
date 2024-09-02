@@ -14,5 +14,5 @@ export class Permission {
     permission_message: string;
 
     @Column({ type: 'boolean', default: false }) //인증상태 (TRUE : 허가,FALSE : 불허가)
-    permission_stats: boolean;
+    permission_status: boolean;
 }

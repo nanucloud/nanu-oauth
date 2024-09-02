@@ -5,25 +5,34 @@ import { CreateApplicationDto, UpdateApplicationDto } from '../dto/request';
 import { ApplicationResponseDto } from '../dto/response';
 import { generateClientKey, generateClientSecret } from '../utils/clientAuth';
 import { Permission } from '../entities/permission.entity';
+import { User } from '../entities/auth_code.entity';
 import CustomErrorResponse from '../config/customerror';
 import { SECURITY_KEY } from '../config/systemkeys';
 
 export class ApplicationController {
   private applicationRepository = AppDataSource.getRepository(Application);
   private permissionRepository = AppDataSource.getRepository(Permission);
+  private userRepository = AppDataSource.getRepository(User);
 
   async createApplication(req: Request, res: Response) {
     const applicationDto: CreateApplicationDto = req.body;
     const clientKey = await generateClientKey();
     const clientSecret = await generateClientSecret(SECURITY_KEY);
+    const owner = await this.userRepository.findOne({ where: { user_id: applicationDto.owner_id } })
+
+    if (!owner) {
+      return CustomErrorResponse.response(404, "Owner User Not Found", res);
+    }
+
     const newApplication = await this.applicationRepository.create({
       ...applicationDto,
       client_key: clientKey,
       client_secret: clientSecret,
+      app_owner: owner,
     });
 
     await this.applicationRepository.save(newApplication);
-    
+
     const responseDto: ApplicationResponseDto = {
       app_id: newApplication.app_id,
       app_name: newApplication.app_name,
@@ -41,7 +50,7 @@ export class ApplicationController {
     const application = await this.applicationRepository.findOne({ where: { app_id: id }, relations: ['scope'] });
 
     if (!application) {
-      return CustomErrorResponse.response(404,"Application Not Found",res);
+      return CustomErrorResponse.response(404, "Application Not Found", res);
     }
 
     const responseDto: ApplicationResponseDto = {
@@ -64,10 +73,11 @@ export class ApplicationController {
       return res.status(404).json({ message: 'Application not found' });
     }
 
-    if (updateDto.access_mode) {
+    if (updateDto.access_mode) { //있으면 수정
       application.permission_mode = updateDto.access_mode;
     }
-    if (updateDto.app_name) {
+    
+    if (updateDto.app_name) { //있으면 수정
       application.app_name = updateDto.app_name;
     }
 
@@ -89,11 +99,8 @@ export class ApplicationController {
     const result = await this.applicationRepository.delete(id);
 
     if (result.affected === 0) {
-      return CustomErrorResponse.response(404,"Application Not Found",res);
+      return CustomErrorResponse.response(404, "Application Not Found", res);
     }
-
     return res.status(204).send();
   }
-
-
 }

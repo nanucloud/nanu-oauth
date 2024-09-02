@@ -2,6 +2,7 @@
 export interface CreateApplicationDto {
     app_name: string;
     access_mode:boolean;
+    owner_id:string;
   }
   
   export interface UpdateApplicationDto {
@@ -30,4 +31,10 @@ export interface CreateApplicationDto {
     user_email: string;
     user_password: string;
     client_key: string;
+  }
+
+  export interface PermissionDto {
+    permission_user: string;
+    permission_application: string;
+    permission_message: string;
   }

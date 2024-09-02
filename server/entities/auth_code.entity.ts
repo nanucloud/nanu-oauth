@@ -28,3 +28,5 @@ export class AuthCode {
   @Column({ type: 'timestamp', nullable: false }) // 인증코드 만료 시간
   expires_at: Date;
 }
+
+export { User };

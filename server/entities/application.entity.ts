@@ -1,5 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, OneToMany } from 'typeorm';
 import { AuthCode } from './auth_code.entity';
+import { User } from './user.entity';
 import { Permission } from './permission.entity';
 
 @Entity('application')
@@ -9,6 +10,9 @@ export class Application {
 
   @Column({ type: 'varchar', nullable: false, unique: true })  //애플리케이션 이름
   app_name: string;
+
+  @ManyToOne(() => User, (user) => user.authCodes) //인증 사용자
+  app_owner: User;
 
   @CreateDateColumn({ type: 'timestamp' }) // 애플리케이션 생성일자
   created_at: Date;
