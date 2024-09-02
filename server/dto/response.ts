@@ -3,6 +3,7 @@ export interface ApplicationResponseDto {
     app_id: string;
     app_name: string;
     client_key: string;
+    client_secret?: string;
     access_mode:boolean;
     created_at: Date;
     updated_at: Date;

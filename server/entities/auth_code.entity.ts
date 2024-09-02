@@ -24,4 +24,7 @@ export class AuthCode {
 
   @Column({type:'int'}) //인증코드 부여 권한
   permission_level: number;
+
+  @Column({ type: 'timestamp', nullable: false }) // 인증코드 만료 시간
+  expires_at: Date;
 }

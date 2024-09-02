@@ -22,6 +22,9 @@ export class Application {
   @Column({ type: 'varchar', nullable: false }) //애플리케이션 개인 키
   client_secret: string;
 
+  @Column({ type: 'boolean', nullable: false }) //애플리케이션 보안 모드
+  permission_mode: boolean;
+
   @OneToMany(() => AuthCode, (authCode) => authCode.application) //애플리케이션 인증코드 외래키
   authCodes: AuthCode[];
 

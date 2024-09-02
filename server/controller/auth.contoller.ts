@@ -5,7 +5,8 @@ import { User } from '../entities/user.entity';
 import { AuthCode } from '../entities/auth_code.entity';
 import { OAuthRequestDto, LoginDto } from '../dto/request';
 import { AuthCodeResponseDto } from '../dto/response';
-import { generateAuthCode, verifyPassword } from '../utils/auth';
+import { generateAuthCode } from '../utils/clientAuth';
+import { verifyPassword } from '../utils/passwordAuth';
 
 export class AuthController {
     private applicationRepository = AppDataSource.getRepository(Application);
@@ -47,15 +48,15 @@ export class AuthController {
         const newAuthCode = this.authCodeRepository.create({
             user,
             application,
-            code: authCode,
+            auth_code: authCode,
             expires_at: expiresAt,
         });
 
         await this.authCodeRepository.save(newAuthCode);
 
         const responseDto: AuthCodeResponseDto = {
-            auth_code: newAuthCode.code,
-            expires_at: newAuthCode.expires_at,
+            auth_code: newAuthCode.auth_code,
+            expires_at: newAuthCode.expires_at
         };
         return res.status(200).json(responseDto);
     }

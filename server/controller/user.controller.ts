@@ -4,7 +4,7 @@ import { AppDataSource } from '../config/datasource';
 import { User } from '../entities/user.entity';
 import { CreateUserDto, UpdateUserDto } from '../dto/request';
 import { UserResponseDto } from '../dto/response';
-import { hashPassword } from '../utils/auth';
+import { hashPassword } from '../utils/passwordAuth';
 
 export class UserController {
   private userRepository = AppDataSource.getRepository(User);

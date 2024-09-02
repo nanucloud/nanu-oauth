@@ -6,7 +6,6 @@ export interface CreateApplicationDto {
   
   export interface UpdateApplicationDto {
     app_name?: string;
-    scope_name?: string;
     access_mode?:boolean;
   }
   
