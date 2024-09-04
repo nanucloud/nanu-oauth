@@ -1,5 +1,5 @@
 import crypto from 'crypto';
-import bcrypt from 'bcrypt';
+import * as bcrypt from 'bcrypt';
 
 //클라이언트 키
 export function generateClientKey(length: number = 6): string {

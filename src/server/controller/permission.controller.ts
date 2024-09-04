@@ -18,18 +18,20 @@ export class PermissionController {
     const permission: PermissionDto = req.body;
 
     const permissionUser = await this.userRepository.findOne({ where: { user_id: permission.permission_user } });
-    const permissionApplication = await this.applicationRepository.findOne({ where: { app_id: permission.permission_application } });
-    
-    if(!permissionUser || !permissionApplication) {
-      CustomErrorResponse.response(404,'User or Application Not Found',res);
+    const permissionApplication = await this.applicationRepository.findOne({ where: { app_id: permission.permission_app } });
+
+    if (!permissionUser || !permissionApplication) {
+      CustomErrorResponse.response(404, 'User or Application Not Found', res);
     }
-    
+
     const newPermission = this.permissionRepository.create({
-      permission_user: permissionUser,
-      permission_app: permissionApplication,
+      permission_user: permissionUser as User,
+      permission_app: permissionApplication as Application,
       permission_message: permission.permission_message,
       permission_status: true,
-      
     });
+
+    await this.permissionRepository.save(newPermission);
+    res.status(201).json(newPermission);
   }
 }

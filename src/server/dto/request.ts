@@ -33,8 +33,9 @@ export interface CreateApplicationDto {
     client_key: string;
   }
 
+  
   export interface PermissionDto {
     permission_user: string;
-    permission_application: string;
+    permission_app:string;
     permission_message: string;
   }

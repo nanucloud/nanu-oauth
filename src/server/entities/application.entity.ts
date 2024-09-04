@@ -33,5 +33,5 @@ export class Application {
   authCodes: AuthCode[];
 
   @OneToMany(() => Permission, (permission) => permission.permission_app) //애플리케이션 권한 목록
-  permissionApps: Permission[];
+  permission: Permission[];
 }
