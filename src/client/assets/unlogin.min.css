@@ -1,0 +1,227 @@
+@font-face {
+  font-family: 'Pretendard-Regular';
+  src: url('https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+}
+
+* {
+  font-family: 'Pretendard-Regular';
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #f1f3f4;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.auth-container {
+  background-color: #FFFFFF;
+  padding: 48px 40px 36px;
+  border-radius: 8px;
+  width: 450px;
+}
+
+.logo {
+  text-align: left;
+  margin-bottom: 24px;
+}
+
+.logo img {
+  width: 150px;
+  height: auto;
+}
+
+h1 {
+  font-size: 20px;
+  font-weight: 400;
+  text-align: left;
+  margin-bottom: 16px;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+.input-group {
+  position: relative;
+  margin-bottom: 24px;
+  transition: opacity 0.3s, transform 0.3s;
+}
+
+input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #dadce0;
+  border-radius: 4px;
+  font-size: 16px;
+  transition: border-color 0.3s;
+}
+
+input:focus {
+  border-color: #1a73e8;
+  outline: none;
+}
+
+label {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #5f6368;
+  transition: all 0.3s;
+  pointer-events: none;
+}
+
+input:focus+label,
+input:not(:placeholder-shown)+label {
+  top: 0;
+  font-size: 12px;
+  color: #1a73e8;
+  background-color: white;
+  padding: 0 4px;
+}
+
+button {
+  padding: 12px;
+  background-color: #1a73e8;
+  color: #FFFFFF;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  text-transform: uppercase;
+  transition: background-color 0.3s;
+}
+
+button:hover {
+  background-color: #1669d8;
+}
+
+.toggle-form {
+  margin-top: 20px;
+  text-align: left;
+}
+
+.toggle-form a {
+  color: #1a73e8;
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.3s;
+}
+
+.toggle-form a:hover {
+  text-decoration: underline;
+}
+
+#languageSelector {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  padding: 8px;
+  border: 1px solid #dadce0;
+  border-radius: 4px;
+  background-color: white;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in-up {
+  animation: fadeInUp 0.5s ease;
+}
+
+#errorMessage {
+  opacity: 1;
+  transition: opacity 0.3s ease-in-out;
+}
+
+#googleButton {
+  margin-top: 20px;
+  display: flex;
+  padding: 0.5rem 1.4rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  font-weight: 700;
+  text-align: center;
+  vertical-align: middle;
+  align-items: center;
+  border-radius: 0.5rem;
+  border: 1px solid rgba(0, 0, 0, 0.25);
+  gap: 0.75rem;
+  color: rgb(65, 63, 63);
+  background-color: #fff;
+  cursor: pointer;
+  transition: all .6s ease;
+}
+
+#googleButton:hover {
+  transform: scale(1.1);
+}
+
+#googleButton svg {
+  height: 24px;
+}
+
+.oAuthAppInfo {
+  text-align: center;
+  font-style: normal;
+  font-size: 1.5em;
+  word-break: keep-all;
+  margin-bottom: 50px;
+  margin-top: 50px;
+}
+
+.oAuthTitle {
+  font-weight: bold;
+  font-size: 1em;
+}
+
+#backButton {
+  background-color: #f1f3f4;
+  color: #1a73e8;
+  margin-right: 10px;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+#backButton:hover {
+  background-color: #e8f0fe;
+}
+
+#pinGroup input {
+  letter-spacing: 0.5em;
+  text-align: center;
+}
+
+@keyframes slide-up {
+  0% {
+    transform: translateY(5%);
+    opacity: 0;
+  }
+
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.auth-container {
+  animation: slide-up 0.4s ease-out;
+}
