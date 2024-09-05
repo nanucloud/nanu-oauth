@@ -16,16 +16,16 @@ export class AuthCode {
   @Column({ type: 'varchar', nullable: false }) //인증코드 Key명
   auth_code: string;
 
-  @CreateDateColumn({ type: 'timestamp' }) //인증코드 생성 시간
+  @CreateDateColumn() //인증코드 생성 시간
   created_at: Date;
 
-  @Column({ type: 'bool', nullable: false }) //인증코드 상태
-  vaild: boolean;
+  @Column({ type: 'int', nullable: false }) //인증코드 상태
+  vaild: number;
 
   @Column({type:'int'}) //인증코드 부여 권한
   permission_level: number;
 
-  @Column({ type: 'timestamp', nullable: false }) // 인증코드 만료 시간
+  @Column({ nullable: false }) // 인증코드 만료 시간
   expires_at: Date;
 }
 export { User };

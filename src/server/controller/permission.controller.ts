@@ -28,7 +28,7 @@ export class PermissionController {
       permission_user: permissionUser as User,
       permission_app: permissionApplication as Application,
       permission_message: permission.permission_message,
-      permission_status: true,
+      permission_status: 1,
     });
 
     await this.permissionRepository.save(newPermission);

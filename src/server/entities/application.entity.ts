@@ -14,10 +14,10 @@ export class Application {
   @ManyToOne(() => User, (user) => user.authCodes) //인증 사용자
   app_owner: User;
 
-  @CreateDateColumn({ type: 'timestamp' }) // 애플리케이션 생성일자
+  @CreateDateColumn() // 애플리케이션 생성일자
   created_at: Date;
 
-  @UpdateDateColumn({ type: 'timestamp' }) //애플리케이션 설정 업데이트 일자
+  @UpdateDateColumn() //애플리케이션 설정 업데이트 일자
   updated_at: Date;
 
   @Column({ type: 'varchar', nullable: false }) //애플리케이션 클라이언트 키
@@ -26,8 +26,8 @@ export class Application {
   @Column({ type: 'varchar', nullable: false }) //애플리케이션 개인 키
   client_secret: string;
 
-  @Column({ type: 'boolean', nullable: false }) //애플리케이션 보안 모드
-  permission_mode: boolean;
+  @Column({ type: 'int', nullable: false }) //애플리케이션 보안 모드
+  permission_mode: number;
 
   @OneToMany(() => AuthCode, (authCode) => authCode.application) //애플리케이션 인증코드 외래키
   authCodes: AuthCode[];

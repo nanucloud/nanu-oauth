@@ -2,3 +2,5 @@
 
 security/
 node_modules/
+dist/
+database.sqlite

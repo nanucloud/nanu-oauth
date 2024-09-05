@@ -16,10 +16,10 @@ export class User {
   @Column({ type: 'varchar', nullable: false })
   user_name: string;
 
-  @CreateDateColumn({ type: 'timestamp' })
+  @CreateDateColumn()
   created_at: Date;
 
-  @UpdateDateColumn({ type: 'timestamp' })
+  @UpdateDateColumn()
   updated_at: Date;
 
   @OneToMany(() => AuthCode, (authCode) => authCode.user)
