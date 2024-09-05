@@ -3,10 +3,9 @@ import { AppDataSource } from '../config/datasource';
 import { Application } from '../entities/application.entity';
 import { User } from '../entities/user.entity';
 import { AuthCode } from '../entities/auth_code.entity';
-import { OAuthRequestDto, LoginDto } from '../dto/request';
-import { AuthCodeResponseDto } from '../dto/response';
 import { generateAuthCode } from '../utils/clientAuth';
 import { verifyPassword } from '../utils/passwordAuth';
+import { AuthCodeResponse, OAuthLoginRequest, OAuthRequest } from '../dto/oauth';
 
 export class AuthController {
     private applicationRepository = AppDataSource.getRepository(Application);
@@ -14,7 +13,7 @@ export class AuthController {
     private authCodeRepository = AppDataSource.getRepository(AuthCode);
 
     async handleOAuthRequest(req: Request, res: Response) {
-        const { app_name, redirect_uri } = req.body as OAuthRequestDto;
+        const { app_name, redirect_uri } = req.body as OAuthRequest;
         const application = await this.applicationRepository.findOne({ where: { app_name } });
 
         if (!application) {
@@ -28,7 +27,7 @@ export class AuthController {
     }
 
     async login(req: Request, res: Response) {
-        const { user_email, user_password, client_key } = req.body as LoginDto;
+        const { user_email, user_password, client_key } = req.body as OAuthLoginRequest;
         const user = await this.userRepository.findOne({ where: { user_email } });
         const application = await this.applicationRepository.findOne({ where: { client_key } });
 
@@ -54,7 +53,7 @@ export class AuthController {
 
         await this.authCodeRepository.save(newAuthCode);
 
-        const responseDto: AuthCodeResponseDto = {
+        const responseDto: AuthCodeResponse = {
             auth_code: newAuthCode.auth_code,
             expires_at: newAuthCode.expires_at
         };

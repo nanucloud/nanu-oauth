@@ -1,7 +1,7 @@
 import crypto from 'crypto';
 import * as bcrypt from 'bcrypt';
 
-//클라이언트 키
+//클라이언트 ID 생성
 export function generateClientKey(length: number = 6): string {
     const charset = 'abcdefghijklmnopqrstuvwxyz0123456789';
     let key = '';
@@ -12,7 +12,7 @@ export function generateClientKey(length: number = 6): string {
     return key;
 }
 
-//클라이언트 개인키
+//클라이언트 개인키 생성
 export async function generateClientSecret(plainTextSecret: string): Promise<string> {
     const saltRounds = 10;
     return bcrypt.hash(plainTextSecret, saltRounds);
