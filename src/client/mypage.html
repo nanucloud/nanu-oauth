@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NANU ID My Page</title>
+    <link rel="stylesheet"
+        href="https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff">
+    <style>
+        /* Existing styles */
+        @font-face {
+            font-family: 'Pretendard-Regular';
+            src: url('https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+            font-weight: 400;
+            font-style: normal;
+        }
+
+        * {
+            font-family: 'Pretendard-Regular';
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #f1f3f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: #202124;
+        }
+
+        .auth-container {
+            background-color: #ffffff;
+            border-radius: 8px;
+            padding: 48px;
+            width: 450px;
+            animation: fade-in 0.3s ease-out;
+        }
+
+        @keyframes fade-in {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .logo img {
+            width: 120px;
+            height: auto;
+        }
+
+        .user-info {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        #UserProfile {
+            width: 96px;
+            height: 96px;
+            border-radius: 50%;
+            margin-bottom: 16px;
+            border: 3px solid #fff;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 30px;
+            font-weight: 400;
+            margin-bottom: 8px;
+        }
+
+        .user-details {
+            font-size: 20px;
+            color: #5f6368;
+            margin-bottom: 24px;
+        }
+
+        .user-details p {
+            margin-bottom: 4px;
+        }
+
+        button {
+            background-color: #1a73e8;
+            color: #ffffff;
+            border: none;
+            border-radius: 4px;
+            padding: 10px 24px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            width: 100%;
+            margin-bottom: 16px;
+        }
+
+        button:hover {
+            background-color: #1665d8;
+        }
+
+        #deleteAccountBtn {
+            background-color: #ffffff;
+            color: #d93025;
+            border: 1px solid #dadce0;
+        }
+
+        #deleteAccountBtn:hover {
+            background-color: #fce8e6;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="auth-container">
+        <div class="logo">
+            <img src="https://nanu.cc/NANU_Brand_Logo/NANU_ID_LOGO.SVG" alt="NANU Logo">
+        </div>
+        <div class="user-info">
+            <img id="UserProfile"
+                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSb51ZwKCKqU4ZrB9cfaUNclbeRiC-V-KZsfQ&s">
+            <h1>사용자</h1>
+            <div id="info">
+                <p><strong>User ID:</strong> <span id="userId"></span></p>
+            </div>
+            <p><strong>Email:</strong> <span id="userEmail"></span></p>
+            <p><strong>Created At:</strong> <span id="createdAt"></span></p>
+        </div>
+        <button id="deleteAccountBtn">Delete Account</button>
+    </div>
+
+    <script>
+        // Function to get cookie value
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+        }
+
+        // Function to decode JWT
+        function decodeJWT(token) {
+            const base64Url = token.split('.')[1];
+            const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+            const jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
+                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+            }).join(''));
+            return JSON.parse(jsonPayload);
+        }
+
+        // Function to fetch user data
+        async function fetchUserData() {
+            try {
+                const token = getCookie('jwt');
+                const decodedToken = decodeJWT(token);
+                const userEmail = decodedToken.email;
+
+                const response = await fetch(`http://localhost:4000/api/users/${userEmail}`);
+                if (!response.ok) {
+                    throw new Error('Failed to fetch user data');
+                }
+                const data = await response.json();
+                displayUserData(data);
+            } catch (error) {
+                console.error('Error fetching user data:', error);
+            }
+        }
+
+        // Function to display user data
+        function displayUserData(userData) {
+            document.getElementById('userId').textContent = userData.user_id;
+            document.getElementById('userEmail').textContent = userData.user_email;
+            document.getElementById('userName').textContent = userData.user_name;
+            document.getElementById('createdAt').textContent = new Date(userData.created_at).toLocaleString();
+        }
+
+        // Function to handle account deletion
+        async function handleDeleteAccount() {
+            if (confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
+                // Implement account deletion logic here
+                console.log('Account deletion requested');
+                // You would typically make an API call here to delete the account
+            }
+        }
+
+        // Event listeners
+        document.addEventListener('DOMContentLoaded', fetchUserData);
+        document.getElementById('deleteAccountBtn').addEventListener('click', handleDeleteAccount);
+    </script>
+</body>
+
+</html>
