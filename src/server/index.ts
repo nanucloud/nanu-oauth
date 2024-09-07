@@ -8,7 +8,7 @@ import mypageRouter from './routes/mypage.router'
 import cors from 'cors'
 
 import { json, urlencoded } from 'express';
-import { ADMIN_PROTECT , USER_PROTECT } from './middleware/jwtVerify';
+import { ADMIN_PROTECT , USER_PROTECT } from './middleware/jwtVerify'; //JWT 인증로직 사용
 
 const app = express();
 const PORT = process.env.PORT || 4000;
