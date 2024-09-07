@@ -1,0 +1,33 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - deploy
+
+jobs:
+  deploy:
+    runs-on: nanu-nodejs-deploy
+
+    steps:
+      - name: Checkout source code.
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'  # 필요한 Node.js 버전 설정
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build the project
+        run: npm run deploy
+
+      - name: Deploy to NANU Cloud
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.NANU_SSH_KEY }}
+          HOST: ${{ secrets.NANU_DEPLOY_SERVER }}
+          USERNAME: ${{ secrets.NANU_DEPLOY_SECURITY_PIN }}
+        run: |
+          echo "$SSH_PRIVATE_KEY" | ssh-agent bash -c "ssh-add - && scp -r ./build $USERNAME@$HOST:/deploy"

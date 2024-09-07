@@ -1,12 +1,9 @@
-import express from 'express'
-import { ApplicationController } from '../controller/application.controller'
+import express from 'express';
+import { OAuthLogin, OAuthRefresh } from '../controller/oauth.controller';
 
 const router = express.Router();
-const applicationController = new ApplicationController();
 
-router.get('/',applicationController.getApplication)
-router.post('/', applicationController.createApplication)
-router.put('/', applicationController.updateApplication)
-router.delete('/', applicationController.createApplication)
+router.post('/login', OAuthLogin);
+router.post('/refresh', OAuthRefresh);
 
-export default router
+export default router;
