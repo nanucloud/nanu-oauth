@@ -68,7 +68,7 @@ export const OAuthLogin = async (req: Request, res: Response) => {
 
     await refreshTokenRepository.save(newRefreshToken);
 
-    res.status(400).send(`${oauthLoginRequest.redirect_uri}?ACCESS=${access_token}&REFRESH=${refresh_token}`)
+    res.status(200).json({"moveto":oauthLoginRequest.redirect_uri+"?ACCESS="+access_token+"&REFRESH="+refresh_token})
 };
 
 // OAuth 리프레시 처리

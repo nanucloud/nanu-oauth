@@ -113,7 +113,7 @@ async function submitCredentials(user_email, user_password) {
     const result = await response.json();
 
     if (response.ok) {
-      window.location.href = '/dashboard';
+      window.location.href = result.moveto;
     } else {
       displayError(result.message || 'Login failed. Please try again.');
     }
