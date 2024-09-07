@@ -4,7 +4,7 @@ import { Application } from '../entities/application.entity';
 import { User } from '../entities/user.entity';
 import { RefreshToken } from '../entities/refresh_token.entity';
 import { Permission } from '../entities/permission.entity';
-import { OAuthLoginRequest, OAuthRequest, RefreshTokenRequest, RefreshTokenResponse } from '../dto/oauth';
+import { OAuthLoginRequest, RefreshTokenRequest, RefreshTokenResponse } from '../dto/oauth';
 import { generateAccessToken, generateRefreshToken, isRefreshTokenValid } from '../utils/clientAuth';
 import { verifyPassword } from '../utils/passwordAuth';
 import { RecaptchaVerify } from '../utils/googleCaptcha';
@@ -35,9 +35,10 @@ export const OAuthLogin = async (req: Request, res: Response) => {
 
     // 사용자 권한 확인
     const permissions = await permissionRepository.findOne({
+        relations: ['permission_user', 'permission_app'],
         where: {
-            permission_user: user,
-            permission_app: application
+            permission_user: { user_id: user.user_id },
+            permission_app: { app_id: application.app_id }
         }
     });
 
@@ -98,8 +99,8 @@ export const OAuthRefresh = async (req: Request, res: Response) => {
     }
 
     const payload = {
-        user_id : token.user.user_id,
-        user_email : token.user.user_email,
+        user_id: token.user.user_id,
+        user_email: token.user.user_email,
     }
 
     //새 액세스토큰 생성
