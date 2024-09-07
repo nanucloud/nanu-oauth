@@ -62,9 +62,8 @@ export const getApplication = async (req: Request, res: Response) => {
   return res.json(responseDto);
 };
 
-export const getApplications = async (req: Request, res: Response) => {
+export const getAllApplications = async (req: Request, res: Response) => {
   const application = await applicationRepository.find();
-
   if (!application) {
     return CustomErrorResponse.response(404, "Application Not Found", res);
   }

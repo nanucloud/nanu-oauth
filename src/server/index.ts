@@ -20,7 +20,7 @@ app.use(urlencoded({ extended: true }))
 
 app.use('/api/users', ADMIN_PROTECT, userRouter);
 app.use('/api/permissions', ADMIN_PROTECT, permissionRouter);
-app.use('/api/apps', ADMIN_PROTECT, applicationRouter);
+app.use('/api/applications', ADMIN_PROTECT, applicationRouter);
 
 app.use('/api/mypage', USER_PROTECT, mypageRouter); //회원정보 조회
 

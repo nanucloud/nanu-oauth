@@ -26,8 +26,8 @@ export class Application {
   @Column({ type: 'varchar', nullable: false })
   client_secret: string; // 애플리케이션 비밀 키
 
-  @Column({ type: 'int', nullable: false })
-  permission_mode: number; // 애플리케이션 보안 모드
+  @Column({ type: 'int', nullable: false ,default:0 })
+  permission_mode: number; // 애플리케이션 보안 모드 (0:비보호 / 1:권한유저만 인증)
 
   @OneToMany(() => RefreshToken, (refreshToken) => refreshToken.application)
   authCodes: RefreshToken[]; // 애플리케이션의 인증 코드들
