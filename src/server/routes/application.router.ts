@@ -1,12 +1,12 @@
-import express from 'express'
-import { ApplicationController } from '../controller/application.controller'
+import express from 'express';
+import { createApplication, getApplication, getAllApplications, updateApplication, deleteApplication } from '../controller/application.controller'; // Adjust the path as needed
 
 const router = express.Router();
-const applicationController = new ApplicationController();
 
-router.get('/',applicationController.getApplication)
-router.post('/', applicationController.createApplication)
-router.put('/', applicationController.updateApplication)
-router.delete('/', applicationController.createApplication)
+router.post('/', createApplication);
+router.get('/:id', getApplication);
+router.get('/', getAllApplications);
+router.put('/:id', updateApplication);
+router.delete('/:id', deleteApplication);
 
-export default router
+export default router;
