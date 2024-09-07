@@ -1,15 +1,14 @@
 export interface OAuthRequest {
-    app_name: string;
+    app_id: string;
     redirect_uri: string;
 }
 
-export interface OAuthLoginRequest {
-    user_email: string;
-    user_password: string;
-    client_key: string;
+
+
+export interface RefreshTokenRequest {
+    refresh_token: string;
 }
 
-export interface AuthCodeResponse {
-    auth_code: string;
-    expires_at: Date;
+export interface RefreshTokenResponse {
+    access_token: string;
 }

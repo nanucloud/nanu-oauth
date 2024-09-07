@@ -13,7 +13,7 @@ export const USER_PROTECT = (req: Request, res: Response, next: NextFunction) =>
 
     try {
         const decoded = jwt.verify(token, JWT_KEY) as jwtPayload
-        req.query.__email = decoded.user_email
+        req.params.user_email = decoded.user_email
 
         next();
     } catch (err) {
@@ -31,10 +31,9 @@ export const ADMIN_PROTECT = (req: Request, res: Response, next: NextFunction) =
 
     try {
         const decoded = jwt.verify(token, JWT_KEY) as jwtPayload
-        req.query.__email = decoded.user_email;
-        console.log(decoded.user_email)
-        console.log(ADMIN_EMAIL)
-        if (!(req.query.__email == ADMIN_EMAIL)) {
+        req.params.user_email = decoded.user_email
+        
+        if (req.query.__email != ADMIN_EMAIL) {
             return res.status(401).json({ message: 'unauthorized ㅗ' })
         }
         next();

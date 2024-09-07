@@ -19,6 +19,10 @@ app.use('/api/users', ADMIN_PROTECT, userRouter);
 app.use('/api/permissions', ADMIN_PROTECT, permissionRouter);
 app.use('/api/auth', loginRouter);
 
+app.use((req, res, next) => {
+    res.status(404).json({ message: "not Found!" })
+})
+
 AppDataSource.initialize().then(() => {
     console.log('Database connected');
 

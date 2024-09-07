@@ -3,7 +3,7 @@ import { AppDataSource } from '../config/datasource';
 import { Application } from '../entities/application.entity';
 import { generateClientKey, generateClientSecret } from '../utils/clientAuth';
 import { Permission } from '../entities/permission.entity';
-import { User } from '../entities/auth_code.entity';
+import { User } from '../entities/refresh_token.entity';
 import CustomErrorResponse from '../config/customerror';
 import { SECURITY_KEY } from '../config/systemkeys';
 import { ApplicationResponse, CreateApplicationRequest, UpdateApplicationRequest } from '../dto/application';

@@ -1,37 +1,37 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, OneToMany } from 'typeorm';
-import { AuthCode } from './auth_code.entity';
-import { User } from './user.entity';
-import { Permission } from './permission.entity';
+import { RefreshToken } from './refresh_token.entity'; // 인증 코드 엔티티
+import { User } from './user.entity'; // 사용자 엔티티
+import { Permission } from './permission.entity'; // 권한 엔티티
 
 @Entity('application')
 export class Application {
-  @PrimaryGeneratedColumn('uuid') //애플리케이션 고유 ID
-  app_id: string;
+  @PrimaryGeneratedColumn('uuid')
+  app_id: string; // 애플리케이션 고유 ID
 
-  @Column({ type: 'varchar', nullable: false, unique: true })  //애플리케이션 이름
-  app_name: string;
+  @Column({ type: 'varchar', nullable: false, unique: true })
+  app_name: string; // 애플리케이션 이름
 
-  @ManyToOne(() => User, (user) => user.authCodes) //인증 사용자
-  app_owner: User;
+  @ManyToOne(() => User, (user) => user.ownedApplications)
+  app_owner: User; // 애플리케이션 소유자
 
-  @CreateDateColumn() // 애플리케이션 생성일자
-  created_at: Date;
+  @CreateDateColumn()
+  created_at: Date; // 애플리케이션 생성일자
 
-  @UpdateDateColumn() //애플리케이션 설정 업데이트 일자
-  updated_at: Date;
+  @UpdateDateColumn()
+  updated_at: Date; // 애플리케이션 업데이트 일자
 
-  @Column({ type: 'varchar', nullable: false }) //애플리케이션 클라이언트 키
-  client_key: string;
+  @Column({ type: 'varchar', nullable: false })
+  client_key: string; // 애플리케이션 클라이언트 키
 
-  @Column({ type: 'varchar', nullable: false }) //애플리케이션 개인 키
-  client_secret: string;
+  @Column({ type: 'varchar', nullable: false })
+  client_secret: string; // 애플리케이션 비밀 키
 
-  @Column({ type: 'int', nullable: false }) //애플리케이션 보안 모드
-  permission_mode: number;
+  @Column({ type: 'int', nullable: false })
+  permission_mode: number; // 애플리케이션 보안 모드
 
-  @OneToMany(() => AuthCode, (authCode) => authCode.application) //애플리케이션 인증코드 외래키
-  authCodes: AuthCode[];
+  @OneToMany(() => RefreshToken, (refreshToken) => refreshToken.application)
+  authCodes: RefreshToken[]; // 애플리케이션의 인증 코드들
 
-  @OneToMany(() => Permission, (permission) => permission.permission_app) //애플리케이션 권한 목록
-  permission: Permission[];
+  @OneToMany(() => Permission, (permission) => permission.permission_app)
+  permissions: Permission[]; // 애플리케이션의 권한들
 }
