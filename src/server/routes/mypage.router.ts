@@ -1,9 +1,8 @@
 import express from 'express'
-import { ApplicationController } from '../controller/application.controller'
+import { FindUser } from '../controller/mypage.controller';
 
 const router = express.Router();
-const applicationController = new ApplicationController();
 
-router.post('/',applicationController.getApplication)
+router.post('/',FindUser)
 
 export default router
