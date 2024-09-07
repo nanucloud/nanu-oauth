@@ -94,7 +94,7 @@ function updateFormStep(step) {
 }
 
 // 서버로 아이디와 비밀번호를 보내는 함수
-async function submitCredentials(user_name, user_password) {
+async function submitCredentials(user_email, user_password) {
   try {
     const token = grecaptcha.getResponse(); // reCAPTCHA 응답 토큰 가져오기
     if (!token) {
@@ -107,7 +107,7 @@ async function submitCredentials(user_name, user_password) {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ user_name, user_password, token ,app_id,redirect_uri })
+      body: JSON.stringify({ user_email, user_password, token ,app_id,redirect_uri })
     });
 
     const result = await response.json();
