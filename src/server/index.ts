@@ -4,6 +4,7 @@ import { AppDataSource } from './config/datasource'
 import userRouter from './routes/user.router'
 import authRouter from './routes/auth.router'
 import permissionRouter from './routes/permission.router'
+import applicationRouter from './routes/application.router'
 import mypageRouter from './routes/mypage.router'
 import cors from 'cors'
 
@@ -19,6 +20,7 @@ app.use(urlencoded({ extended: true }))
 
 app.use('/api/users', ADMIN_PROTECT, userRouter);
 app.use('/api/permissions', ADMIN_PROTECT, permissionRouter);
+app.use('/api/apps', ADMIN_PROTECT, applicationRouter);
 
 app.use('/api/mypage', USER_PROTECT, mypageRouter); //회원정보 조회
 

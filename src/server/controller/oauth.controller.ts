@@ -5,7 +5,7 @@ import { User } from '../entities/user.entity';
 import { RefreshToken } from '../entities/refresh_token.entity';
 import { Permission } from '../entities/permission.entity';
 import { OAuthLoginRequest, OAuthRequest, RefreshTokenRequest, RefreshTokenResponse } from '../dto/oauth';
-import { generateAccessToken, generateAuthCode, generateRefreshToken } from '../utils/clientAuth';
+import { generateAccessToken, generateRefreshToken, isRefreshTokenValid } from '../utils/clientAuth';
 import { verifyPassword } from '../utils/passwordAuth';
 import { RecaptchaVerify } from '../utils/googleCaptcha';
 import { jwtPayload } from '../dto/jwt';
@@ -84,7 +84,7 @@ export const OAuthLogin = async (req: Request, res: Response) => {
 
     await refreshTokenRepository.save(newRefreshToken);
 
-    // 응답 전송
+    res.status(400).send(`${oauthLoginRequest.redirect_uri}?ACCESS=${access_token}&REFRESH=${refresh_token}`)
 };
 
 // OAuth 리프레시 처리
@@ -98,9 +98,7 @@ export const OAuthRefresh = async (req: Request, res: Response) => {
         return res.status(400).json({ message: 'Invalid refresh token' });
     }
 
-    
-
-    if (!token.valid || token.expires_at < new Date()) {
+    if (!token.valid || !isRefreshTokenValid(token.auth_code)) {
         return res.status(401).json({ message: 'Refresh token expired or invalid' });
     }
 
@@ -116,8 +114,13 @@ export const OAuthRefresh = async (req: Request, res: Response) => {
         return res.status(403).json({ message: 'No permission for this application' });
     }
 
+    const payload = {
+        user_id : token.user.user_id,
+        user_email : token.user.user_email,
+    }
+
     //새 액세스토큰 생성
-    const access_token = await generateAccessToken(payload); 
+    const access_token = await generateAccessToken(payload);
 
     return res.json({
         access_token,
