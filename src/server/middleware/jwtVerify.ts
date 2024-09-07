@@ -32,7 +32,7 @@ export const ADMIN_PROTECT = (req: Request, res: Response, next: NextFunction) =
         const decoded = jwt.verify(token, JWT_KEY) as jwtPayload
         req.params.user_email = decoded.user_email
 
-        if (req.params.user_emaill != ADMIN_EMAIL) {
+        if (req.params.user_email != ADMIN_EMAIL) {
             return res.status(401).json({ message: 'unauthorized ㅗ' })
         }
         next();
