@@ -41,8 +41,7 @@ export const OAuthRefresh = async (req: Request, res: Response) => {
     if (!token) {
         return res.status(400).json({ message: 'Invalid refresh token' });
     }
-
-    // 리프레시 토큰 유효성 검사
+    
     if (!token.valid || token.expires_at < new Date()) {
         return res.status(401).json({ message: 'Refresh token expired or invalid' });
     }
