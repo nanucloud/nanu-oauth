@@ -12,7 +12,7 @@ const permissionRepository = AppDataSource.getRepository(Permission);
 const userRepository = AppDataSource.getRepository(User);
 const applicationRepository = AppDataSource.getRepository(Application);
 
-export const createPermission = async(req: Request, res: Response) => {
+export const createPermission = async (req: Request, res: Response) => {
   const permission: CreatePermissionRequest = req.body;
 
   const permissionUser = await userRepository.findOne({ where: { user_id: permission.permission_user } });
@@ -31,4 +31,11 @@ export const createPermission = async(req: Request, res: Response) => {
 
   await permissionRepository.save(newPermission);
   res.status(201).json(newPermission);
+}
+
+export const getPermission = async (req: Request, res: Response) => {
+  const permissions = await permissionRepository.find({
+    relations: ['permission_user', 'permission_app']
+  });
+  res.status(201).json(permissions);
 }

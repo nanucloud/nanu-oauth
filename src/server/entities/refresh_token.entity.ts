@@ -24,9 +24,7 @@ export class RefreshToken {
 
   @Column({ type: 'int' })
   permission_level: number; // 인증 코드 권한 수준
-
-  @Column({ nullable: false })
-  expires_at: Date; // 인증 코드 만료일자
 }
+
 export { User };
 

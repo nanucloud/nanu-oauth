@@ -1,8 +1,3 @@
-export interface OAuthRequest {
-    app_id: string;
-    redirect_uri: string;
-}
-
 export interface OAuthLoginRequest {
     app_id:string;
     token:string;

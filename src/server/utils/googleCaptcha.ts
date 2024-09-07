@@ -1,15 +1,13 @@
 import axios from 'axios';
-import { CAPTCHA_KEY, GCP_PROJECT_ID } from '../config/systemkeys';
+import { CAPTCHA_KEY } from '../config/systemkeys';
 
-export const RecaptchaVerify = async function(token: string): Promise<boolean> {
-  const url = `https://recaptchaenterprise.googleapis.com/v1/projects/${GCP_PROJECT_ID}/assessments?key=${CAPTCHA_KEY}`;
-
+export const RecaptchaVerify = async function (token: string): Promise<boolean> {
+  const url = `https://www.google.com/recaptcha/api/siteverify`;
   try {
     const response = await axios.post(url, {
       event: {
-        token,
-        siteKey: '6LeajjcqAAAAAGX1QMsPq1aSHwN5fHsG-z_9v_yh',
-        expectedAction: 'join',
+        token: token,
+        secret: CAPTCHA_KEY
       }
     }, {
       headers: {
@@ -17,10 +15,13 @@ export const RecaptchaVerify = async function(token: string): Promise<boolean> {
       }
     });
 
-    const { riskAnalysis } = response.data;
-    return riskAnalysis.score >= 0.5;
+    return response.data.success && response.data.score >= 0.5;
   } catch (error) {
-    console.error('Error verifying reCAPTCHA:', error);
-    return false;
+    if (axios.isAxiosError(error) && error.response) {
+      console.error('Error details:', error.response.data.error);
+    } else {
+      console.error('An unexpected error occurred:', error);
+    }
+    return false
   }
 }
