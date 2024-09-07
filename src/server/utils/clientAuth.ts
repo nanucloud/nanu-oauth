@@ -1,5 +1,7 @@
 import crypto from 'crypto';
 import * as bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+import { JWT_KEY, JWT_REF_KEY } from '../config/systemkeys';
 
 //클라이언트 ID 생성
 export function generateClientKey(length: number = 6): string {
@@ -23,8 +25,15 @@ export async function verifyClientSecret(plainTextSecret: string, hashedSecret: 
     return bcrypt.compare(plainTextSecret, hashedSecret);
 }
 
-//클라이언트 인증키 생성
-export function generateAuthCode(): string {
-  const length = Math.floor(Math.random() * (24 - 12 + 1)) + 12; //인증키 길이 난수화
-  return crypto.randomBytes(length).toString('hex').slice(0, length); //랜덤 바이트 생성
+//액세스토큰 생성
+export async function generateAccessToken(payload:string): Promise<string> {
+    return jwt.sign(payload, JWT_KEY, { expiresIn: '1m' })
+}
+
+//리프레시토큰 생성
+export async function generateRefreshToken(payload:string): Promise<string> {
+    return jwt.sign(payload, JWT_REF_KEY, { expiresIn: '1h' })
+}
+export async function isRefreshKeyValid(payload:string): Promise<string> {
+    return jwt.sign(payload, JWT_REF_KEY, { expiresIn: '1h' })
 }
