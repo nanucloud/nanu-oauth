@@ -8,98 +8,105 @@ import CustomErrorResponse from '../config/customerror';
 import { SECURITY_KEY } from '../config/systemkeys';
 import { ApplicationResponse, CreateApplicationRequest, UpdateApplicationRequest } from '../dto/application';
 
-export class ApplicationController {
-  private applicationRepository = AppDataSource.getRepository(Application);
-  private permissionRepository = AppDataSource.getRepository(Permission);
-  private userRepository = AppDataSource.getRepository(User);
+const permissionRepository = AppDataSource.getRepository(Permission);
+const userRepository = AppDataSource.getRepository(User);
+const applicationRepository = AppDataSource.getRepository(Application);
 
-  async createApplication(req: Request, res: Response) {
-    const applicationDto: CreateApplicationRequest = req.body;
-    const clientKey = await generateClientKey();
-    const clientSecret = await generateClientSecret(SECURITY_KEY);
-    const owner = await this.userRepository.findOne({ where: { user_id: applicationDto.owner_id } })
+export const createApplication = async (req: Request, res: Response) => {
+  const applicationDto: CreateApplicationRequest = req.body;
+  const clientKey = await generateClientKey();
+  const clientSecret = await generateClientSecret(SECURITY_KEY);
+  const owner = await userRepository.findOne({ where: { user_id: applicationDto.owner_id } });
 
-    if (!owner) {
-      return CustomErrorResponse.response(404, "Owner User Not Found", res);
-    }
-
-    const newApplication = await this.applicationRepository.create({
-      ...applicationDto,
-      client_key: clientKey,
-      client_secret: clientSecret,
-      app_owner: owner,
-    });
-
-    await this.applicationRepository.save(newApplication);
-
-    const responseDto: ApplicationResponse = {
-      app_id: newApplication.app_id,
-      app_name: newApplication.app_name,
-      client_key: newApplication.client_key,
-      client_secret: newApplication.client_secret,
-      created_at: newApplication.created_at,
-      updated_at: newApplication.updated_at,
-      permission_mode: newApplication.permission_mode,
-    };
-    return res.status(201).json(responseDto);
+  if (!owner) {
+    return CustomErrorResponse.response(404, "Owner User Not Found", res);
   }
 
-  async getApplication(req: Request, res: Response) {
-    const { id } = req.params;
-    const application = await this.applicationRepository.findOne({ where: { app_id: id }, relations: ['scope'] });
+  const newApplication = applicationRepository.create({
+    ...applicationDto,
+    client_key: clientKey,
+    client_secret: clientSecret,
+    app_owner: owner,
+  });
 
-    if (!application) {
-      return CustomErrorResponse.response(404, "Application Not Found", res);
-    }
+  await applicationRepository.save(newApplication);
 
-    const responseDto: ApplicationResponse = {
-      app_id: application.app_id,
-      app_name: application.app_name,
-      client_key: application.client_key,
-      permission_mode: application.permission_mode,
-      created_at: application.created_at,
-      updated_at: application.updated_at,
-    };
-    return res.json(responseDto);
+  const responseDto: ApplicationResponse = {
+    app_id: newApplication.app_id,
+    app_name: newApplication.app_name,
+    client_key: newApplication.client_key,
+    client_secret: newApplication.client_secret,
+    created_at: newApplication.created_at,
+    updated_at: newApplication.updated_at,
+    permission_mode: newApplication.permission_mode,
+  };
+  return res.status(201).json(responseDto);
+};
+
+export const getApplication = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const application = await applicationRepository.findOne({ where: { app_id: id }, relations: ['scope'] });
+
+  if (!application) {
+    return CustomErrorResponse.response(404, "Application Not Found", res);
   }
 
-  async updateApplication(req: Request, res: Response) {
-    const { id } = req.params;
-    const updateDto: UpdateApplicationRequest = req.body;
-    const application = await this.applicationRepository.findOne({ where: { app_id: id } });
+  const responseDto: ApplicationResponse = {
+    app_id: application.app_id,
+    app_name: application.app_name,
+    client_key: application.client_key,
+    permission_mode: application.permission_mode,
+    created_at: application.created_at,
+    updated_at: application.updated_at,
+  };
+  return res.json(responseDto);
+};
 
-    if (!application) {
-      return res.status(404).json({ message: 'Application not found' });
-    }
+export const getApplications = async (req: Request, res: Response) => {
+  const application = await applicationRepository.find();
 
-    if (updateDto.permission_mode) { //있으면 수정
-      application.permission_mode = updateDto.permission_mode;
-    }
-    
-    if (updateDto.app_name) { //있으면 수정
-      application.app_name = updateDto.app_name;
-    }
+  if (!application) {
+    return CustomErrorResponse.response(404, "Application Not Found", res);
+  }
+  return res.json(application);
+};
 
-    await this.applicationRepository.save(application);
+export const updateApplication = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const updateDto: UpdateApplicationRequest = req.body;
+  const application = await applicationRepository.findOne({ where: { app_id: id } });
 
-    const responseDto: ApplicationResponse = {
-      app_id: application.app_id,
-      app_name: application.app_name,
-      client_key: application.client_key,
-      permission_mode: application.permission_mode,
-      created_at: application.created_at,
-      updated_at: application.updated_at,
-    };
-    return res.json(responseDto);
+  if (!application) {
+    return res.status(404).json({ message: 'Application not found' });
   }
 
-  async deleteApplication(req: Request, res: Response) {
-    const { id } = req.params;
-    const result = await this.applicationRepository.delete(id);
-
-    if (result.affected === 0) {
-      return CustomErrorResponse.response(404, "Application Not Found", res);
-    }
-    return res.status(204).send();
+  if (updateDto.permission_mode) {
+    application.permission_mode = updateDto.permission_mode;
   }
-}
+
+  if (updateDto.app_name) {
+    application.app_name = updateDto.app_name;
+  }
+
+  await applicationRepository.save(application);
+
+  const responseDto: ApplicationResponse = {
+    app_id: application.app_id,
+    app_name: application.app_name,
+    client_key: application.client_key,
+    permission_mode: application.permission_mode,
+    created_at: application.created_at,
+    updated_at: application.updated_at,
+  };
+  return res.json(responseDto);
+};
+
+export const deleteApplication = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const result = await applicationRepository.delete(id);
+
+  if (result.affected === 0) {
+    return CustomErrorResponse.response(404, "Application Not Found", res);
+  }
+  return res.status(204).send();
+};
