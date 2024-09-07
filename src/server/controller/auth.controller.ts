@@ -4,9 +4,10 @@ import { User } from '../entities/user.entity';
 import { LoginUserRequest, JoinUserRequest, AuthResponse } from '../dto/auth';
 import { hashPassword, verifyPassword } from '../utils/passwordAuth';
 import { jwtPayload } from '../dto/jwt';
-import jwt from 'jsonwebtoken';
 import { JWT_KEY } from '../config/systemkeys';
 import { RecaptchaVerify } from '../utils/googleCaptcha';
+
+import jwt from 'jsonwebtoken';
 
 const userRepository = AppDataSource.getRepository(User);
 

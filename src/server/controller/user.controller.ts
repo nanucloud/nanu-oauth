@@ -48,7 +48,6 @@ export const FindUser = async (req: Request, res: Response) => {
       user_id: user.user_id,
       user_email: user.user_email,
       user_name: user.user_name,
-      user_password: user.user_password,
       created_at: user.created_at,
       updated_at: user.updated_at,
     };
