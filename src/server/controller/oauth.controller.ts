@@ -16,23 +16,6 @@ const userRepository = AppDataSource.getRepository(User);
 const refreshTokenRepository = AppDataSource.getRepository(RefreshToken);
 const permissionRepository = AppDataSource.getRepository(Permission);
 
-//OAuth 처리 클라이언트 주소
-const OAUTH_CLIENT_ADDR = 'localhost:3000/oauthrun.html';
-
-// OAuth 로그인 처리
-export const OAuthRedirect = async (req: Request, res: Response) => {
-    const oauthRequest: OAuthRequest = req.body;
-    const application = await applicationRepository.findOne({ where: { app_id: oauthRequest.app_id } });
-
-    if (!application) {
-        return res.status(400).json({ message: 'Invalid application' });
-    }
-
-    const oauth_url = `${OAUTH_CLIENT_ADDR}?app_id=${oauthRequest.app_id}&app_name=${application.app_name}&redirect=${oauthRequest.redirect_uri}`
-
-    res.redirect(oauth_url);
-};
-
 export const OAuthLogin = async (req: Request, res: Response) => {
     const oauthLoginRequest: OAuthLoginRequest = req.body;
 
