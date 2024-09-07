@@ -4,7 +4,7 @@ import { Application } from '../entities/application.entity';
 import { User } from '../entities/user.entity';
 import { RefreshToken } from '../entities/refresh_token.entity';
 import { Permission } from '../entities/permission.entity';
-import { OAuthLoginRequest, OAuthRequest, RefreshTokenRequest, RefreshTokenResponse } from '../dto/oauth';
+import { OAuthLoginRequest, RefreshTokenRequest, RefreshTokenResponse } from '../dto/oauth';
 import { generateAccessToken, generateRefreshToken, isRefreshTokenValid } from '../utils/clientAuth';
 import { verifyPassword } from '../utils/passwordAuth';
 import { RecaptchaVerify } from '../utils/googleCaptcha';

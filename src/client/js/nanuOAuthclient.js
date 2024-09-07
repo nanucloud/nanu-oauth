@@ -29,12 +29,12 @@ function getQueryParameter(name) {
 
 // GET으로 넘어온 값들을 변수에 저장
 const appName = getQueryParameter('app_name');
-const appId = getQueryParameter('app_id');
-const redirectUri = getQueryParameter('redirect_uri');
-const API_ENDPOINT = 'http://auth.nanu.cc/api/oauth'
+const app_id = getQueryParameter('app_id');
+const redirect_uri = getQueryParameter('redirect_uri');
+const API_ENDPOINT = 'https://auth.nanu.cc/api/oauth/login'
 
 // 값이 없으면 오류 처리
-if (!appName || !appId || !redirectUri) {
+if (!appName || !app_id || !redirect_uri) {
   alert('서비스 인증에 실패했어요')
   window.location.href = 'https://static-gp.ncloud.sbs/code/500/';
 } else {
@@ -94,7 +94,7 @@ function updateFormStep(step) {
 }
 
 // 서버로 아이디와 비밀번호를 보내는 함수
-async function submitCredentials(username, password) {
+async function submitCredentials(user_name, user_password) {
   try {
     const token = grecaptcha.getResponse(); // reCAPTCHA 응답 토큰 가져오기
     if (!token) {
@@ -107,7 +107,7 @@ async function submitCredentials(username, password) {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ username, password, token })
+      body: JSON.stringify({ user_name, user_password, token ,app_id,redirect_uri })
     });
 
     const result = await response.json();
