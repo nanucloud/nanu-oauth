@@ -1,0 +1,15 @@
+{
+  "usernameTitle": "メールアドレスを入力してください",
+  "passwordTitle": "パスワードを入力してください",
+  "pinTitle": "ロボットではないことを証明してください",
+  "usernameLabel": "メールアドレス",
+  "passwordLabel": "パスワード",
+  "nextButton": "次へ",
+  "backButton": "戻る",
+  "loginToggleLink": "パスワードを忘れた場合",
+  "app_end": " はあなたのNANU IDにアクセスしようとしています",
+  "authTitle": "NANU IDで続行",
+  "joinLink": "NANU IDアカウントを作成",
+  "googleButton": "Googleでサインイン",
+  "nanuidLoginTitle": "NANU IDで続行"
+}
