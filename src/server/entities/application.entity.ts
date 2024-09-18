@@ -11,7 +11,7 @@ export class Application {
   @Column({ type: 'varchar', nullable: false, unique: true })
   app_name: string; // 애플리케이션 이름
 
-  @ManyToOne(() => User, (user) => user.ownedApplications)
+  @ManyToOne(() => User, (user) => user.ownedApplications, { onDelete: "CASCADE" })
   app_owner: User; // 애플리케이션 소유자
 
   @CreateDateColumn()
@@ -29,9 +29,9 @@ export class Application {
   @Column({ type: 'int', nullable: false ,default:0 })
   permission_mode: number; // 애플리케이션 보안 모드 (0:비보호 / 1:권한유저만 인증)
 
-  @OneToMany(() => RefreshToken, (refreshToken) => refreshToken.application)
+  @OneToMany(() => RefreshToken, (refreshToken) => refreshToken.application, { onDelete: "CASCADE" })
   authCodes: RefreshToken[]; // 애플리케이션의 인증 코드들
 
-  @OneToMany(() => Permission, (permission) => permission.permission_app)
+  @OneToMany(() => Permission, (permission) => permission.permission_app, { onDelete: "CASCADE" })
   permissions: Permission[]; // 애플리케이션의 권한들
 }
