@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NANU_ID ADMIN</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.3.4/axios.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #0064FF;
+            --secondary-color: #3182F6;
+            --background-color: #F9FAFC;
+            --text-color: #191F28;
+            --border-color: #E5E8EB;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: var(--background-color);
+            color: var(--text-color);
+        }
+
+        .container {
+            display: flex;
+            height: 100vh;
+        }
+
+        .sidebar {
+            width: 200px;
+            background-color: white;
+            border-right: 1px solid var(--border-color);
+            padding: 20px;
+        }
+
+        .content {
+            flex-grow: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        h1,
+        h2,
+        h3 {
+            color: var(--primary-color);
+        }
+
+        .nav {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .nav a {
+            color: var(--text-color);
+            text-decoration: none;
+            padding: 10px;
+            margin-bottom: 5px;
+            border-radius: 8px;
+            transition: background-color 0.3s;
+        }
+
+        .nav a:hover {
+            background-color: var(--background-color);
+        }
+
+        .section {
+            background: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            text-align: left;
+            padding: 12px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        button {
+            background: var(--primary-color);
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background: var(--secondary-color);
+        }
+
+        input[type="text"],
+        input[type="password"],
+        select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 500px;
+            border-radius: 12px;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <img src="https://nanu.cc/NANU_Brand_Logo/NANU_ID_LOGO.SVG" style="height: 30px;">
+            <b>Ops</b>
+            <div class="nav">
+                <a href="#" onclick="showApplications()">Applications</a>
+                <a href="#" onclick="showUsers()">Users</a>
+                <a href="#" onclick="showPermissions()">Permissions</a>
+            </div>
+        </div>
+        <div class="content" id="content"></div>
+    </div>
+
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div id="modal-body"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:4000/api';
+        let authToken = '';
+
+        // Fetch auth token from cookie
+        function getAuthToken() {
+            const cookies = document.cookie.split(';');
+            for (let cookie of cookies) {
+                const [name, value] = cookie.trim().split('=');
+                if (name === 'AUTH') {
+                    authToken = value;
+                    break;
+                }
+            }
+        }
+
+        // API setup
+        const api = axios.create({
+            baseURL: API_BASE_URL,
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+
+        api.interceptors.request.use(config => {
+            config.headers['Authorization'] = `Bearer ${authToken}`;
+            return config;
+        });
+
+        // Applications
+        async function getApplications() {
+            try {
+                const response = await api.get('/applications');
+                return response.data;
+            } catch (error) {
+                console.error('Error fetching applications:', error);
+                return [];
+            }
+        }
+
+        async function createApplication(data) {
+            try {
+                await api.post('/applications', {
+                    app_name: data.app_name,
+                    permission_mode: parseInt(data.permission_mode),
+                    owner_id: data.owner_id
+                });
+                showApplications();
+            } catch (error) {
+                console.error('Error creating application:', error);
+            }
+        }
+
+        async function deleteApplication(appId) {
+            try {
+                await api.delete(`/applications/${appId}`);
+                showApplications();
+            } catch (error) {
+                console.error('Error deleting application:', error);
+            }
+        }
+
+        // Users
+        async function getUsers() {
+            try {
+                const response = await api.get('/users/all');
+                return response.data;
+            } catch (error) {
+                console.error('Error fetching users:', error);
+                return [];
+            }
+        }
+
+        async function createUser(data) {
+            try {
+                await api.post('/users', {
+                    user_email: data.email,
+                    user_password: data.password,
+                    user_name: data.name
+                });
+                showUsers();
+            } catch (error) {
+                console.error('Error creating user:', error);
+            }
+        }
+
+        async function updateUser(data) {
+            try {
+                await api.put('/users', {
+                    user_email: data.email,
+                    user_password: data.password,
+                    user_name: data.name
+                });
+                showUsers();
+            } catch (error) {
+                console.error('Error updating user:', error);
+            }
+        }
+
+        async function deleteUser(userEmail) {
+            try {
+                await api.delete(`/users/${userEmail}`);
+                showUsers();
+            } catch (error) {
+                console.error('Error deleting user:', error);
+            }
+        }
+
+        // Permissions
+        async function getPermissions() {
+            try {
+                const response = await api.get('/permissions');
+                return response.data;
+            } catch (error) {
+                console.error('Error fetching permissions:', error);
+                return [];
+            }
+        }
+
+        async function createPermission(data) {
+            try {
+                await api.post('/permissions', {
+                    permission_user: data.user_id,
+                    permission_app: data.app_id,
+                    permission_message: data.permission
+                });
+                showPermissions();
+            } catch (error) {
+                console.error('Error creating permission:', error);
+            }
+        }
+
+        async function deletePermission(userEmail, appId) {
+            try {
+                await api.delete('/permissions', {
+                    data: {
+                        permission_user: userEmail,
+                        permission_app: appId
+                    }
+                });
+                showPermissions();
+            } catch (error) {
+                console.error('Error deleting permission:', error);
+            }
+        }
+
+        // UI Functions
+        function showApplications() {
+            getApplications().then(apps => {
+                let html = `
+        <div class="section">
+            <h2>Applications</h2>
+            <table>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Client Key</th>
+                    <th>Permission Mode</th>
+                    <th>Actions</th>
+                </tr>
+                ${apps.map(app => `
+                    <tr>
+                        <td>${app.app_id}</td>
+                        <td>${app.app_name}</td>
+                        <td>${app.client_key}</td>
+                        <td>${app.permission_mode}</td>
+                        <td><button onclick="deleteApplication('${app.app_id}')">Delete</button></td>
+                    </tr>
+                `).join('')}
+            </table>
+            <button onclick="showAddApplicationForm()">Add Application</button>
+        </div>
+    `;
+                document.getElementById('content').innerHTML = html;
+            });
+        }
+
+        function showAddApplicationForm() {
+            const form = `
+        <h3>Add Application</h3>
+        <input type="text" id="appName" placeholder="Application Name">
+        <input type="text" id="ownerId" placeholder="Owner ID">
+        <select id="permissionMode">
+            <option value="0">Public (0)</option>
+            <option value="1">Private (1)</option>
+        </select>
+        <button onclick="addApplication()">Add Application</button>
+    `;
+            showModal(form);
+        }
+
+        function addApplication() {
+            const appName = document.getElementById('appName').value;
+            const ownerId = document.getElementById('ownerId').value;
+            const permissionMode = document.getElementById('permissionMode').value;
+
+            createApplication({ app_name: appName, owner_id: ownerId, permission_mode: permissionMode });
+            closeModal();
+        }
+
+        function showUsers() {
+            getUsers().then(users => {
+                let html = `
+        <div class="section">
+            <h2>Users</h2>
+            <table>
+                <tr>
+                    <th>ID</th>
+                    <th>Email</th>
+                    <th>Name</th>
+                    <th>Actions</th>
+                </tr>
+                ${users.map(user => `
+                    <tr>
+                        <td>${user.user_id}</td>
+                        <td>${user.user_email}</td>
+                        <td>${user.user_name}</td>
+                        <td>
+                            <button onclick="showUpdateUserForm('${user.user_email}', '${user.user_name}')">Update</button>
+                            <button onclick="deleteUser('${user.user_email}')">Delete</button>
+                        </td>
+                    </tr>
+                `).join('')}
+            </table>
+            <button onclick="showAddUserForm()">Add User</button>
+        </div>
+    `;
+                document.getElementById('content').innerHTML = html;
+            });
+        }
+
+        function showAddUserForm() {
+            const form = `
+        <h3>Add User</h3>
+        <input type="text" id="userName" placeholder="User Name">
+        <input type="text" id="userEmail" placeholder="User Email">
+        <input type="password" id="userPassword" placeholder="Password">
+        <button onclick="addUser()">Add User</button>
+    `;
+            showModal(form);
+        }
+
+        function addUser() {
+            const userName = document.getElementById('userName').value;
+            const userEmail = document.getElementById('userEmail').value;
+            const userPassword = document.getElementById('userPassword').value;
+
+            createUser({ name: userName, email: userEmail, password: userPassword });
+            closeModal();
+        }
+
+        function showUpdateUserForm(userEmail, userName) {
+            const form = `
+        <h3>Update User</h3>
+        <input type="text" id="updateUserName" value="${userName}" placeholder="User Name">
+        <input type="text" id="updateUserEmail" value="${userEmail}" placeholder="User Email" readonly>
+        <input type="password" id="updateUserPassword" placeholder="New Password (leave blank to keep current)">
+        <button onclick="updateUserDetails('${userEmail}')">Update User</button>
+    `;
+            showModal(form);
+        }
+
+        function updateUserDetails(userEmail) {
+            const userName = document.getElementById('updateUserName').value;
+            const userPassword = document.getElementById('updateUserPassword').value;
+
+            const updateData = {
+                email: userEmail,
+                name: userName
+            };
+
+            if (userPassword) {
+                updateData.password = userPassword;
+            }
+
+            updateUser(updateData);
+            closeModal();
+        }
+
+        function showPermissions() {
+            getPermissions().then(permissions => {
+                let html = `
+        <div class="section">
+            <h2>Permissions</h2>
+            <table>
+                <tr>
+                    <th>User Email</th>
+                    <th>User Name</th>
+                    <th>Application Name</th>
+                    <th>Permission Message</th>
+                    <th>Actions</th>
+                </tr>
+                ${permissions.map(perm => `
+                    <tr>
+                        <td>${perm.permission_user?.user_email ?? 'N/A'}</td>
+                        <td>${perm.permission_user?.user_name ?? 'N/A'}</td>
+                        <td>${perm.permission_app?.app_name ?? 'N/A'}</td>
+                        <td>${perm.permission_message ?? 'N/A'}</td>
+                        <td>
+                            <button onclick="deletePermission('${perm.permission_user?.user_email}', '${perm.permission_app?.app_id}')">Delete</button>
+                        </td>
+                    </tr>
+                `).join('')}
+            </table>
+            <button onclick="showAddPermissionForm()">Add Permission</button>
+        </div>
+    `;
+                document.getElementById('content').innerHTML = html;
+            });
+        }
+
+        function showAddPermissionForm() {
+            const form = `
+        <h3>Add Permission</h3>
+        <input type="text" id="appId" placeholder="App ID">
+        <input type="text" id="permission" placeholder="Permission">
+        <input type="text" id="userId" placeholder="User ID">
+        <button onclick="addPermission()">Add Permission</button>
+    `;
+            showModal(form);
+        }
+
+        function addPermission() {
+            const appId = document.getElementById('appId').value;
+            const permission = document.getElementById('permission').value;
+            const userId = document.getElementById('userId').value;
+
+            createPermission({ app_id: appId, permission: permission, user_id: userId });
+            closeModal();
+        }
+
+        // Modal Functions
+        function showModal(content) {
+            document.getElementById('modal-body').innerHTML = content;
+            document.getElementById('modal').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('modal').style.display = 'none';
+        }
+
+        // Event Listeners
+        document.querySelector('.close').onclick = closeModal;
+
+        // Init auth token
+        getAuthToken();
+
+        // Initial load
+        showApplications();
+    </script>
+</body>
+
+</html>
