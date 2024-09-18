@@ -33,7 +33,7 @@ export const ADMIN_PROTECT = (req: Request, res: Response, next: NextFunction) =
         req.params.user_email = decoded.user_email
 
         if (req.params.user_email != ADMIN_EMAIL) {
-            return res.status(401).json({ message: 'unauthorized ㅗ' })
+            return res.status(401).json({ message: 'unauthorized' })
         }
         next();
     } catch (err) {

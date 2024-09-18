@@ -67,16 +67,18 @@ export const OAuthLogin = async (req: Request, res: Response) => {
     });
 
     await refreshTokenRepository.save(newRefreshToken);
+    console.log
 
-    res.status(200).json({"moveto":oauthLoginRequest.redirect_uri+"?ACCESS="+access_token+"&REFRESH="+refresh_token})
+    res.status(200).json({ "moveto": oauthLoginRequest.redirect_uri + "?ACCESS=" + access_token + "&REFRESH=" + refresh_token })
 };
-
-// OAuth 리프레시 처리
 export const OAuthRefresh = async (req: Request, res: Response) => {
     const refreshLoginRequest: RefreshTokenRequest = req.body;
 
-    // 리프레시 토큰을 데이터베이스에서 찾기
-    const token = await refreshTokenRepository.findOne({ where: { auth_code: refreshLoginRequest.refresh_token } });
+    // 리프레시 토큰을 데이터베이스에서 찾기, 관계 함께 로드
+    const token = await refreshTokenRepository.findOne({
+        where: { auth_code: refreshLoginRequest.refresh_token },
+        relations: ['user', 'application'], // user와 application 관계를 함께 로드
+    });
 
     if (!token) {
         return res.status(400).json({ message: 'Invalid refresh token' });
@@ -89,8 +91,8 @@ export const OAuthRefresh = async (req: Request, res: Response) => {
     // 권한 확인
     const permissions = await permissionRepository.find({
         where: {
-            permission_user: token.user,
-            permission_app: token.application,
+            permission_user: { user_id: token.user.user_id },
+            permission_app: { app_id: token.application.app_id },
         },
     });
 
@@ -101,15 +103,16 @@ export const OAuthRefresh = async (req: Request, res: Response) => {
     const payload = {
         user_id: token.user.user_id,
         user_email: token.user.user_email,
-    }
+    };
 
-    //새 액세스토큰 생성
+    // 새 액세스 토큰 생성
     const access_token = await generateAccessToken(payload);
 
     return res.json({
         access_token,
     } as RefreshTokenResponse);
 };
+
 
 const isValidDomain = (url: string) => { // 도메인 검증
     try {
