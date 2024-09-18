@@ -23,12 +23,12 @@ export class User {
   @UpdateDateColumn()
   updated_at: Date; // 사용자 업데이트 일자
 
-  @OneToMany(() => RefreshToken, (refreshToken) => refreshToken.user)
+  @OneToMany(() => RefreshToken, (refreshToken) => refreshToken.user , { onDelete: "CASCADE" })
   authCodes: RefreshToken[]; // 사용자의 인증 코드들
 
-  @OneToMany(() => Permission, (permission) => permission.permission_user)
+  @OneToMany(() => Permission, (permission) => permission.permission_user, { onDelete: "CASCADE" })
   permission_apps: Permission[]; // 사용자의 권한들
 
-  @OneToMany(() => Application, (application) => application.app_owner)
+  @OneToMany(() => Application, (application) => application.app_owner, { onDelete: "CASCADE" })
   ownedApplications: Application[]; // 사용자가 소유한 애플리케이션들
 }
