@@ -10,7 +10,7 @@ export class RefreshToken {
   @ManyToOne(() => User, (user) => user.authCodes)
   user: User; // 인증 사용자
 
-  @ManyToOne(() => Application, (application) => application.authCodes)
+  @ManyToOne(() => Application, (application) => application.authCodes, { onDelete: "CASCADE" })
   application: Application; // 인증 대상 애플리케이션
 
   @Column({ type: 'varchar', nullable: false })
@@ -27,4 +27,3 @@ export class RefreshToken {
 }
 
 export { User };
-

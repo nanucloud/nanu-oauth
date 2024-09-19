@@ -36,6 +36,7 @@ export async function generateRefreshToken(payload:JwtPayload): Promise<string> 
     return jwt.sign(payload, JWT_REF_KEY, { expiresIn: '1h' })
 }
 
+//리프레시토큰 검증
 export async function isRefreshTokenValid(payload:string): Promise<boolean> {
     try {
         const result = jwt.verify(payload, JWT_REF_KEY) as jwtPayload
@@ -43,5 +44,16 @@ export async function isRefreshTokenValid(payload:string): Promise<boolean> {
         else return false
     } catch (err) {
         return false
+    }
+}
+
+//액세스토큰 검증
+export async function verifyAccessToken(token: string): Promise<jwtPayload | null> {
+    try {
+        const decoded = jwt.verify(token, JWT_KEY) as jwtPayload;
+        return decoded;
+    } catch (error) {
+        console.error('Error verifying access token:', error);
+        return null;
     }
 }
