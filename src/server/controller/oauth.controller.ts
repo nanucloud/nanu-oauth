@@ -5,7 +5,7 @@ import { User } from '../entities/user.entity';
 import { RefreshToken } from '../entities/refresh_token.entity';
 import { Permission } from '../entities/permission.entity';
 import { OAuthLoginRequest, RefreshTokenRequest, RefreshTokenResponse } from '../dto/oauth';
-import { generateAccessToken, generateRefreshToken, isRefreshTokenValid } from '../utils/clientAuth';
+import { generateAccessToken, generateRefreshToken, isRefreshTokenValid, verifyAccessToken  } from '../utils/clientAuth';
 import { verifyPassword } from '../utils/passwordAuth';
 import { RecaptchaVerify } from '../utils/googleCaptcha';
 import { jwtPayload } from '../dto/jwt';
@@ -120,5 +120,51 @@ const isValidDomain = (url: string) => { // 도메인 검증
         return hostname.endsWith('nanu.cc') || hostname.endsWith('ncloud.sbs');
     } catch (error) {
         return false;
+    }
+};
+
+export const clientAuthValidation = async (req: Request, res: Response) => {
+    const { ClientId } = req.params;
+    const { access_token } = req.body;
+
+    try {
+        const application = await applicationRepository.findOne({ where: { client_key: ClientId } });
+        if (!application) {
+            return res.status(404).json({ message: 'Application not found' });
+        }
+
+        const payload = await verifyAccessToken(access_token) as jwtPayload;
+        if (!payload) {
+            return res.status(401).json({ message: 'Invalid access token' });
+        }
+
+        const user = await userRepository.findOne({ where: { user_id: payload.user_id } });
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        if (application.permission_mode === 1) {
+            const permission = await permissionRepository.findOne({
+                where: {
+                    permission_user: { user_id: user.user_id },
+                    permission_app: { app_id: application.app_id },
+                    permission_status: 1,
+                }
+            });
+
+            if (!permission) {
+                return res.status(403).json({ message: 'User does not have permission for this application' });
+            }
+        }
+
+        return res.status(200).json({
+            message: 'Token is valid and user is authorized',
+            user_id: user.user_id,
+            user_email: user.user_email
+        });
+
+    } catch (error) {
+        console.error('Error in client authentication:', error);
+        return res.status(500).json({ message: 'Internal server error' });
     }
 };
