@@ -7,4 +7,6 @@ router.post('/login', OAuthLogin);
 
 router.post('/refresh', OAuthRefresh);
 
+router.post('/refresh', OAuthRefresh);
+
 export default router;
