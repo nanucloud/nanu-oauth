@@ -117,7 +117,7 @@ export const OAuthRefresh = async (req: Request, res: Response) => {
 const isValidDomain = (url: string) => { // 도메인 검증
     try {
         const { hostname } = new URL(url);
-        return hostname.endsWith('nanu.cc') || hostname.endsWith('ncloud.sbs');
+        return hostname.endsWith('nanu.cc') || hostname.endsWith('ncloud.sbs') || hostname.endsWith('donghyun.cc');
     } catch (error) {
         return false;
     }
