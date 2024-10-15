@@ -10,7 +10,8 @@
     "strictPropertyInitialization": false,
     "skipLibCheck": true,
     "rootDir": "./src",
-    "outDir" : "./dist"
+    "outDir" : "./dist",
+    "typeRoots": ["./node_modules/@types", "./src/server/config/types"]
   },
   "include": [
     "src/**/*.ts"

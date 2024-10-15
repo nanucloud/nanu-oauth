@@ -28,12 +28,12 @@ export async function verifyClientSecret(plainTextSecret: string, hashedSecret: 
 
 //액세스토큰 생성
 export async function generateAccessToken(payload:JwtPayload): Promise<string> {
-    return jwt.sign(payload, JWT_KEY, { expiresIn: '1m' })
+    return jwt.sign(payload, JWT_KEY, { expiresIn: '6m' })
 }
 
 //리프레시토큰 생성
 export async function generateRefreshToken(payload:JwtPayload): Promise<string> {
-    return jwt.sign(payload, JWT_REF_KEY, { expiresIn: '1h' })
+    return jwt.sign(payload, JWT_REF_KEY, { expiresIn: '1d' })
 }
 
 //리프레시토큰 검증
