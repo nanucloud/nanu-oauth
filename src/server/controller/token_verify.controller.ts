@@ -7,7 +7,10 @@ const userRepository = AppDataSource.getRepository(User);
 
 export const UserTokenVerify = async (req: Request, res: Response) => {
   try {
-    const { user_email,TargetApplication } = req.params;
+    const user_email = req.user?.email
+    if(!user_email) {
+      return res.status(401).json({ message: 'Token Error!' });
+    }
     const user = await userRepository.findOne({ where: { user_email: user_email } });
 
     if (!user) {
